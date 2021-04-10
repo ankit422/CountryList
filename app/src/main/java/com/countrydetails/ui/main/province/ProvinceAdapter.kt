@@ -1,5 +1,7 @@
 package com.countrydetails.ui.main.province
 
+import android.content.Context
+import android.graphics.drawable.Drawable
 import android.os.Build
 import android.text.Html
 import android.view.LayoutInflater
@@ -8,9 +10,10 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.countrydetails.data.entities.Province
 import com.countrydetails.databinding.DataItemsBinding
+import java.io.InputStream
 
 
-class ProvinceAdapter : RecyclerView.Adapter<DataViewHolder>() {
+class ProvinceAdapter(private val context: Context) : RecyclerView.Adapter<DataViewHolder>() {
 
     private var list: List<Province> = ArrayList()
 
@@ -22,7 +25,7 @@ class ProvinceAdapter : RecyclerView.Adapter<DataViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DataViewHolder {
         val binding: DataItemsBinding =
             DataItemsBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return DataViewHolder(binding)
+        return DataViewHolder(binding, context)
     }
 
     override fun onBindViewHolder(holder: DataViewHolder, position: Int) =
@@ -32,7 +35,8 @@ class ProvinceAdapter : RecyclerView.Adapter<DataViewHolder>() {
 }
 
 class DataViewHolder(
-    private val itemBinding: DataItemsBinding
+    private val itemBinding: DataItemsBinding,
+    private val context: Context
 ) : RecyclerView.ViewHolder(itemBinding.root) {
 
     private lateinit var article: Province
@@ -46,6 +50,21 @@ class DataViewHolder(
                     "Province Code <b>${dataItem.Code}", Html.FROM_HTML_MODE_LEGACY
                 )
             }
+            itemBinding.countryCode.visibility = View.VISIBLE
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                itemBinding.countryCode.text = Html.fromHtml(
+                    "Country Code <b>${dataItem.CountryCode}", Html.FROM_HTML_MODE_LEGACY
+                )
+            }
+            try {
+                val ims: InputStream = context.assets.open("${dataItem.CountryCode?.toLowerCase()}.png")
+                val d = Drawable.createFromStream(ims, null)
+                itemBinding.imageView.setImageDrawable(d)
+                ims.close()
+            } catch (ex: Exception) {
+                ex.printStackTrace()
+            }
+
         } catch (e: Exception) {
             e.printStackTrace()
         }

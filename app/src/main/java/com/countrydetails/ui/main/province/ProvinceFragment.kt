@@ -37,7 +37,7 @@ class ProvinceFragment : Fragment() {
     }
 
     private fun setupRecyclerView() {
-        adapter = ProvinceAdapter()
+        adapter = ProvinceAdapter(requireContext())
         binding.charactersRv.layoutManager = LinearLayoutManager(requireContext())
         binding.charactersRv.adapter = adapter
     }

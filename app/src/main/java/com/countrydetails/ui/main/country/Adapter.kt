@@ -1,5 +1,7 @@
 package com.countrydetails.ui.main.country
 
+import android.content.Context
+import android.graphics.drawable.Drawable
 import android.os.Build
 import android.text.Html
 import android.view.LayoutInflater
@@ -8,9 +10,10 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.countrydetails.data.entities.Country
 import com.countrydetails.databinding.DataItemsBinding
+import java.io.InputStream
 
 
-class Adapter(private val listener: ArticleItemListener) :
+class Adapter(private val context: Context, private val listener: ArticleItemListener) :
     RecyclerView.Adapter<DataViewHolder>() {
 
     interface ArticleItemListener {
@@ -27,7 +30,7 @@ class Adapter(private val listener: ArticleItemListener) :
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DataViewHolder {
         val binding: DataItemsBinding =
             DataItemsBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return DataViewHolder(binding, listener)
+        return DataViewHolder(binding, listener, context)
     }
 
     override fun onBindViewHolder(holder: DataViewHolder, position: Int) =
@@ -38,7 +41,8 @@ class Adapter(private val listener: ArticleItemListener) :
 
 class DataViewHolder(
     private val itemBinding: DataItemsBinding,
-    private val listener: Adapter.ArticleItemListener
+    private val listener: Adapter.ArticleItemListener,
+    private val context: Context
 ) : RecyclerView.ViewHolder(itemBinding.root), View.OnClickListener {
 
     private lateinit var article: Country
@@ -55,6 +59,14 @@ class DataViewHolder(
                 itemBinding.pinCode.text = Html.fromHtml(
                     "Country Code <b>${dataItem.Code}", Html.FROM_HTML_MODE_LEGACY
                 )
+            }
+            try {
+                val ims: InputStream = context.assets.open("${dataItem.Code?.toLowerCase()}.png")
+                val d = Drawable.createFromStream(ims, null)
+                itemBinding.imageView.setImageDrawable(d)
+                ims.close()
+            } catch (ex: Exception) {
+                ex.printStackTrace()
             }
         } catch (e: Exception) {
             e.printStackTrace()

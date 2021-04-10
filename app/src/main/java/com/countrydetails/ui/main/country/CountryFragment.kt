@@ -40,7 +40,7 @@ class CountryFragment : Fragment(), Adapter.ArticleItemListener {
     }
 
     private fun setupRecyclerView() {
-        adapter = Adapter(this)
+        adapter = Adapter(requireContext(), this)
         binding.charactersRv.layoutManager = LinearLayoutManager(requireContext())
         binding.charactersRv.adapter = adapter
     }
