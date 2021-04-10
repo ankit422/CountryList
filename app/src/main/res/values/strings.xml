@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">Country List</string>
+    <string name="no_data">No province available for selected country</string>
+</resources>
